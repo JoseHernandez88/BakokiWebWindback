@@ -1,7 +1,8 @@
-﻿@page "/CheckbookRequest"
+﻿@page "/OrdenarLibroDeCajas"
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
 @layout LoginLayout
-@inject NavigationManager NavigationManager
-@inject HttpClient HTTP
+@inject NavigationManager NavigationManager 
+@inject HttpClient Http
 @using BakokiWeb.Shared
 
 <PageTitle>Request Checkbook</PageTitle>
@@ -92,25 +93,66 @@
 </body>
 
 @code {
+
+
+    public Cliente? cli = new();
     private string? numeroCuenta { get; set; }
     private string? razon { get; set; }
     private string notice = "";
 
-    private void RequestCheckbook()
+    protected override async Task OnInitializedAsync()
     {
+
+        List<Cuenta> cuentas = new();
+        var userEmail = await LocalStore.GetItemAsStringAsync("email");
+        var list = await Http.GetFromJsonAsync<List<Cliente>>($"api/Cliente/{userEmail}");
+        if (list is not null)
+        {
+            cli = list.FirstOrDefault();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+
+
+
+
+
+    private async void RequestCheckbook()
+    {
+
+
         // Perform validation and submit the request
         if (numeroCuenta != null && razon != null)
         {
-            // Example: Send a request to the server to process the checkbook request
-            // Create an API endpoint on the server to handle request
-            // and update the client-side logic accordingly.
+            List<Cuenta> list = new();
+            Cuenta? cuenta = new();
+            var results = await Http.GetFromJsonAsync<List<Cuenta>>($"Cuenta/get/1/{numeroCuenta}");
+            if (results != null)
+            {
+                if (results.Any())
+                {
+                    cuenta = list.FirstOrDefault();
+                }
+            }
+            if (cuenta is not null && cuenta.Cliente.Equals(cli))
+            {
+                cli.OrderBook(cuenta, razon);
+                NavigationManager.NavigateTo("/MainPage");
 
-            // After a successful request navigate to another page
-            NavigationManager.NavigateTo("/CheckbookRequested");
+            }
+            else
+            {
+                notice = "The account number does not match any of your accounts.";
+            }
         }
         else
         {
             notice = "Please fill in all required fields.";
         }
     }
+
 }
