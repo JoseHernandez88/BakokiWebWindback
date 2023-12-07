@@ -1,0 +1,54 @@
+﻿@page "/MostrarHistorial"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using BakokiWeb.Shared;
+
+<PageTitle>Mostrar Historial</PageTitle>
+
+<h1>Historial de cuentas</h1>
+
+@if (cuentas == null)
+{
+    <p>Esta cuenta no tiene historial...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre de la cuenta</th>
+                <th>Fecha de inicio</th>
+                <th>Historial de cuenta</th>
+                <th>Número de cuenta</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cuenta in cuentas)
+            {
+                <tr>
+                    <td>@cuenta.AccountName</td>
+                    <td>@cuenta.IsOpen</td>
+                    <td>@cuenta.Transaciones</td>
+                    <td>@cuenta.AccountNumber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    List<Cuenta> cuentas = new List<Cuenta>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var results = await Http.GetFromJsonAsync<List<Cuenta>>("api/Cuenta");
+        @if (results != null)
+        {
+            cuentas = results;
+        }
+    }
+
+}
+
+

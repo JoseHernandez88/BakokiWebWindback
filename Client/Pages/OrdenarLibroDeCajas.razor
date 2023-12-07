@@ -1,0 +1,116 @@
+﻿@page "/CheckbookRequest"
+@layout LoginLayout
+@inject NavigationManager NavigationManager
+@inject HttpClient HTTP
+@using BakokiWeb.Shared
+
+<PageTitle>Request Checkbook</PageTitle>
+
+<style>
+    body {
+        background-image: url("../Assets/yunqueBlur.png");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+    }
+
+    .box {
+        width: 30%;
+        height: 60%;
+    }
+
+    .registreBox {
+        background-color: #cbd3d4;
+        border-radius: 7%;
+        position: absolute;
+    }
+
+    .loginboxPos {
+        margin-left: 35%;
+        margin-top: 5%;
+    }
+
+    h1 {
+        color: #949259;
+        text-align: center;
+        margin-bottom: 10%;
+    }
+
+    .TextBox {
+        width: 80%; /* Increase width for better centering */
+        height: 5%;
+        background-color: transparent;
+        border-width: 0;
+        border-bottom-width: thin;
+        font-size: 20px;
+        font-family: "Times New Roman", Times, serif;
+        margin-bottom: 10px; /* Add margin for spacing between fields */
+    }
+
+    .text {
+        text-align: center;
+        margin-bottom: 10%;
+    }
+
+    .button {
+        border: none;
+        color: #949259;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: white;
+        border-radius: 10%;
+        font-family: "Times New Roman", Times, serif;
+    }
+</style>
+
+<body>
+    <div class="loginboxPos">
+        <div class="box registreBox">
+            <h1>Request Checkbook</h1>
+
+            <form method="post" class="parent text">
+                <div class="textBoxPos child">
+                    <input @bind="numeroCuenta" type="text" placeholder="Número de cuenta" class="TextBox" name="NumeroCuenta" />
+                </div>
+
+                <div class="textBoxPos child">
+                    <input @bind="razon" type="text" placeholder="Razón" class="TextBox" name="Razon" />
+                </div>
+            </form>
+
+            <div class="text">
+                <button @onclick="RequestCheckbook" class="button">Request Checkbook</button>
+                <p>@notice</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+@code {
+    private string? numeroCuenta { get; set; }
+    private string? razon { get; set; }
+    private string notice = "";
+
+    private void RequestCheckbook()
+    {
+        // Perform validation and submit the request
+        if (numeroCuenta != null && razon != null)
+        {
+            // Example: Send a request to the server to process the checkbook request
+            // Create an API endpoint on the server to handle request
+            // and update the client-side logic accordingly.
+
+            // After a successful request navigate to another page
+            NavigationManager.NavigateTo("/CheckbookRequested");
+        }
+        else
+        {
+            notice = "Please fill in all required fields.";
+        }
+    }
+}

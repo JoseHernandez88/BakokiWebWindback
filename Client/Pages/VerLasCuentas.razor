@@ -1,0 +1,98 @@
+﻿@page "/Cuenta"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using BakokiWeb.Shared
+
+
+@if (cuentas.Count <= 0)
+{
+    <span> Ninguna cuenta asociada encontrada...</span>
+}
+else
+{
+
+    @foreach (var cuenta in cuentas)
+    {
+
+        <div style="background-color: #78774890; height: 150px;" class="container rounded-pill mb-4">
+
+
+
+            <div class="d-flex justify-content-between">
+
+                <div class="d-flex">
+
+                    <div class="p-2">
+
+
+                        <img src="Images/CreditcardPlaceholder.png" style="width:100px; height:100px; margin:15px;" class="rounded float-left">
+
+                    </div>
+
+                    <div class="p-2 d-flex align-self-center">
+
+                        <div class="col d-flex flex-column">
+
+
+                            <div class="Tipo-de-Cuenta float-left">
+
+                                <h2>
+                                    @cuenta.AccountName
+                                </h2>
+
+                            </div>
+
+                            <div class="Numero-de-cuenta float-left">
+
+                                <h2>
+                                    @cuenta.AccountNumber
+                                </h2>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="balance-actual ml-auto p-2 d-flex align-self-center justify-content-center">
+
+
+                    <Tooltip Text="Presione aquí para poder ver el historial de la cuenta."><button @onclick="ShowHistory" class="btn btn-primary m-2"> Ver historial</button></Tooltip>
+
+                    <h3 class="m-2"> $1000 </h3>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    }
+
+}
+
+
+@code {
+    List<Cuenta> cuentas = new List<Cuenta>();
+
+    void ShowHistory()
+    {
+        NavigationManager.NavigateTo("/MostrarHistorial");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var results = await Http.GetFromJsonAsync<List<Cuenta>>("api/Cuenta");
+        @if (results != null)
+        {
+            cuentas = results;
+        }
+    }
+
+
+}
+
