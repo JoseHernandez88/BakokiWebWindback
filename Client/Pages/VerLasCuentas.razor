@@ -62,6 +62,8 @@ else
 
                     <Tooltip Text="Presione aquí para poder ver el historial de la cuenta."><button @onclick="ShowHistory" class="btn btn-primary m-2"> Ver historial</button></Tooltip>
 
+                    <Tooltip Text="Presione aquí para borrar su cuenta."><button style="background-color: red;" @onclick="DeleteAccount" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
+
                     <h3 class="m-2"> $1000 </h3>
 
                 </div>
@@ -82,6 +84,11 @@ else
     void ShowHistory()
     {
         NavigationManager.NavigateTo("/MostrarHistorial");
+    }
+
+    void DeleteAccount()
+    {
+        //Añadir method de borrar cuenta
     }
 
     protected override async Task OnInitializedAsync()
