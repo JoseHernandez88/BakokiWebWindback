@@ -1,6 +1,7 @@
 ﻿@layout LoginLayout
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
 @using BakokiWeb.Shared
 @page "/"
 
@@ -140,7 +141,14 @@
     private string email { get; set; }
     string notice = "";
 
-
+    protected override async Task OnInitializedAsync()
+    {
+        var user=await LocalStore.GetItemAsStringAsync("email");
+        if(user is not null)
+        {
+            NavigationManager.NavigateTo("/MainPage");
+        }
+    }
     private async void LoginValidation()
     {
 
@@ -178,6 +186,7 @@
                                 if(contrasena == cli.Password)
                                 {
                                     NavigationManager.NavigateTo("/MainPage");
+                                    await LocalStore.SetItemAsStringAsync("email", cli.Email);
                                 }
                                 else
                                 {

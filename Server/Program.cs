@@ -1,11 +1,13 @@
 using BakokiWeb.Server.Data;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Blazored.LocalStorage;
 
 
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddBlazoredLocalStorage();
 string? connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
 
 // Add services to the container.

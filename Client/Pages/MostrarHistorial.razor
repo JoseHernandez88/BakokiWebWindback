@@ -1,6 +1,7 @@
 ﻿@page "/MostrarHistorial"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
 @using BakokiWeb.Shared;
 
 <PageTitle>Mostrar Historial</PageTitle>
@@ -38,15 +39,29 @@ else
 
 @code {
 
-    List<Cuenta> cuentas = new List<Cuenta>();
+        List<Cuenta> cuentas = new List<Cuenta>();
 
     protected override async Task OnInitializedAsync()
     {
+        Cliente? cli = new();
+        List<Cuenta> cuentas = new();
+        var userEmail = await LocalStore.GetItemAsStringAsync("email");
+        var list = await Http.GetFromJsonAsync<List<Cliente>>($"api/Cliente/{userEmail}");
+        if(list is not null)
+        {
+            cli= list.FirstOrDefault();  
+        }
+        if (cli is not null)
+        {
+            cuentas = cli.Cuentas.ToList();
+        }
+            /*
         var results = await Http.GetFromJsonAsync<List<Cuenta>>("api/Cuenta");
         @if (results != null)
         {
             cuentas = results;
         }
+        */
     }
 
 }
