@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@using BakokiWeb.Shared;
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inherits LayoutComponentBase
 
 <div class="page">
     <div class="sidebar">
@@ -7,7 +11,7 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="/">Logout</a>
+            <button @onclick="LougeOut" class="button">LougOut</button>
         </div>
 
         <article class="content px-4">
@@ -15,3 +19,31 @@
         </article>
     </main>
 </div>
+
+@code{
+    Cliente? cli = new();
+    protected override async Task OnInitializedAsync()
+    {
+        List<Cuenta> cuentas = new();
+        var userEmail = await LocalStore.GetItemAsStringAsync("email");
+        var list = await Http.GetFromJsonAsync<List<Cliente>>($"api/Cliente/{userEmail}");
+        if (list is not null)
+        {
+            cli = list.FirstOrDefault();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+    public async void LougeOut()
+    {
+        if(cli is not null)
+        {
+            await Http.PutAsJsonAsync<Cliente>($"api/Cliente/put / 0 /{ cli.Email}",cli);
+            await LocalStore.ClearAsync();
+            NavigationManager.NavigateTo("/");
+        }
+        
+    }
+}

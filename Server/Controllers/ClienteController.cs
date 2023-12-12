@@ -1,7 +1,9 @@
 ﻿using BakokiWeb.Server.Data;
 using BakokiWeb.Shared;
+using GemBox.Email;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 
 namespace BakokiWeb.Server.Controllers
@@ -17,7 +19,9 @@ namespace BakokiWeb.Server.Controllers
 			_context = context;
 		}
 
-		[HttpGet]
+		
+
+        [HttpGet]
 		public async Task<ActionResult<List<Cliente?>>> GetAllClient()
 		{
 			try

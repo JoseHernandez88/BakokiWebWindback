@@ -94,60 +94,86 @@
 
 @code {
 
-
-    public Cliente? cli = new();
-    private string? numeroCuenta { get; set; }
-    private string? razon { get; set; }
+    [Parameter]
+    public string? numeroCuenta { get; set; } = "";
+    public string? razon { get; set; } = "";
     private string notice = "";
+    public Cliente? cli = new();
+    public List<Cuenta> cuentas = new();
+    public Cuenta cuenta = new();
 
     protected override async Task OnInitializedAsync()
     {
 
-        List<Cuenta> cuentas = new();
-        var userEmail = await LocalStore.GetItemAsStringAsync("email");
-        var list = await Http.GetFromJsonAsync<List<Cliente>>($"api/Cliente/{userEmail}");
-        if (list is not null)
-        {
-            cli = list.FirstOrDefault();
+
+        var email = await LocalStore.GetItemAsStringAsync("email");
+        var list = await Http.GetFromJsonAsync<List<Cuenta>>($"api/Cuenta/get/{email}");
+        var result= await Http.GetFromJsonAsync<List<Cliente>>($"api/Cliente/{email}");
+        if (list is not null){
+            cuentas = list;
         }
-        else
+        if( result is not null)
         {
-            NavigationManager.NavigateTo("/");
+            cli = result.FirstOrDefault();
         }
     }
-
-
-
-
-
 
     private async void RequestCheckbook()
     {
 
 
         // Perform validation and submit the request
-        if (numeroCuenta != null && razon != null)
+        if (cuentas!= null && numeroCuenta != null && razon != null)
         {
-            List<Cuenta> list = new();
-            Cuenta? cuenta = new();
-            var results = await Http.GetFromJsonAsync<List<Cuenta>>($"Cuenta/get/1/{numeroCuenta}");
+            var results = await Http.GetFromJsonAsync<List<Cuenta>>($"api/Cuenta/{numeroCuenta}");
+
+
             if (results != null)
             {
                 if (results.Any())
                 {
-                    cuenta = list.FirstOrDefault();
+                    var temp = results.FirstOrDefault();
+                    if(temp is not null)
+                    {
+                        cuenta = temp;
+                    }
                 }
             }
-            if (cuenta is not null && cuenta.Cliente.Equals(cli))
+            if (cuentas.Count > 0)
             {
-                cli.OrderBook(cuenta, razon);
-                NavigationManager.NavigateTo("/MainPage");
-
+                Console.WriteLine($"{cuentas[0].AccountNumber}");
             }
             else
             {
-                notice = "The account number does not match any of your accounts.";
+                Console.WriteLine("cuentas not found");
             }
+            foreach(Cuenta acc in cuentas)
+            {
+                Console.WriteLine($"Cliente:{acc.AccountName}");
+
+                if (cli is not null && cuenta is not null && acc.AccountNumber==cuenta.AccountNumber)
+                {
+
+                    var orderBody = "Hi,\n" +
+                         $"Client {cli.FirstName} {cli.LastName}, {cli.Email}.\n" +
+                         $"wishes to order a new check book for their {cuenta.AccountName} account " +
+                         $"with account number {cuenta.AccountNumber}. For the following reason: " +
+                         $"{razon}. Please mail the book to: \n" +
+                         $"{cli.FirstName} {cli.LastName}\n" +
+                         $"{cli.AddressLine1}\n" +
+                         $"{cli.AddressLine2}\n" +
+                         $"And contat them to {cli.PhoneNumber} in case of any isssues." +
+                         $"Best Wishes,\n" +
+                         $"Your banking app alway Bankoki." +
+                         "Read more about it on https://www.gemboxsoftware.com/email";
+
+                    var result = await Http.PostAsJsonAsync<string>("/api/OrderBook ", orderBody);
+                    NavigationManager.NavigateTo("/MainPage");
+
+                } 
+            }
+            notice = "The account number does not match any of your accounts.";
+          
         }
         else
         {

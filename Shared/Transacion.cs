@@ -17,7 +17,7 @@ namespace BakokiWeb.Shared
 		public DateTime FilledAt { get; set; }
 		public string Origin { get; set; } 
 			= "";
-		public Cuenta Cuenta { get; set; } 
+		public virtual Cuenta Cuenta { get; set; } 
 			= new Cuenta();
 		public Transacion() { }
 		public Int64 SignedCentValue() 

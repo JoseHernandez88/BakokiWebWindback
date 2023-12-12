@@ -28,7 +28,7 @@ namespace BakokiWeb.Server.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
-		[HttpGet("{email}")]
+		[HttpGet("get/{email}")]
 		public async Task<ActionResult<List<Cuenta?>>> GetAllCuentasByCliente(string email)
 		{
 			try
@@ -36,7 +36,7 @@ namespace BakokiWeb.Server.Controllers
 				var list = await _context.Cuentas.Where
 				(
 					cnt => cnt.IsOpen &&
-					cnt.Cliente.LoggedIn &&
+					//cnt.Cliente.LoggedIn &&
 					cnt.Cliente.Email.Equals(email)
 				).ToListAsync();
 				return Ok(list);
@@ -54,7 +54,7 @@ namespace BakokiWeb.Server.Controllers
 				var list = await _context.Cuentas.Where
 				(
 					cnt => cnt.IsOpen &&
-					cnt.Cliente.LoggedIn &&
+					//cnt.Cliente.LoggedIn &&
 					cnt.AccountNumber.Equals(accountNumber)
 				).ToListAsync();
 				return Ok(list);

@@ -1,6 +1,7 @@
 ﻿@page "/Cuenta"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
 @using BakokiWeb.Shared
 
 
@@ -93,7 +94,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var results = await Http.GetFromJsonAsync<List<Cuenta>>("api/Cuenta");
+        var email = await LocalStore.GetItemAsStringAsync("email");
+        var results = await Http.GetFromJsonAsync<List<Cuenta>>($"api/Cuenta/get/{email}");
         @if (results != null)
         {
             cuentas = results;

@@ -19,9 +19,9 @@ namespace BakokiWeb.Shared
 			= "";
 		public bool IsOpen { get; set; }
 			= true;
-		public Cliente Cliente { get; set; }
+		public virtual Cliente Cliente { get; set; }
 			= new Cliente();
-		public ICollection<Transacion> Transaciones { get; set; }
+		public virtual ICollection<Transacion> Transaciones { get; set; }
 			= new List<Transacion>();
 
 		public Cuenta() { }
