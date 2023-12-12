@@ -1,7 +1,7 @@
 ﻿@page "/Transfer"
 @inject HttpClient Http
-@using BakokiWeb.Shared;
-
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
+@using BakokiWeb.Shared
 
 <PageTitle>Transfer</PageTitle>
 
@@ -20,10 +20,46 @@
 
             <div class="d-flex justify-content-around">
 
-                <img src="Images/ElegirCuenta.png" style="width:300px; height:300px; margin:15px;" class="rounded" />
-                <h1 class="d-flex align-self-center text-secondary"><span class="oi oi-transfer" aria-hidden="true"></span> </h1>
-                <img src="Images/ElegirCuenta.png" style="width:300px; height:300px; margin:15px;" class="rounded" />
+                <div class="d-flex flex-column text-center">
 
+                    <img src="Images/ElegirCuenta.png" style="width:300px; height:300px; margin:15px;" class="rounded" />
+
+                    @{ var account1 = new List<string> { "cuenta1", "cuenta1" }; }
+
+                    <Dropdown TItem="string" OnSelected="@OnSelected">
+                        <InitialTip>Escoja la cuenta de la cual quiere transferir</InitialTip>
+                        <ChildContent>
+                            @foreach (var cuenta in cuentas)
+                            {
+                                <DropdownListItem Item="@account1[0]"> @cuenta.AccountName / @cuenta.AccountNumber </DropdownListItem>
+                            }
+                        </ChildContent>
+                    </Dropdown>
+
+                </div>
+
+
+                <h1 class="d-flex align-self-center text-secondary"><span class="oi oi-transfer" aria-hidden="true"></span></h1>
+
+                <div class="d-flex flex-column text-center">
+
+                    <img src="Images/ElegirCuenta.png" style="width:300px; height:300px; margin:15px;" class="rounded" />
+
+
+                    @{ var account2 = new List<string> { "cuenta1", "cuenta2" }; }
+
+                    <Dropdown TItem="string" OnSelected="@OnSelected">
+                        <InitialTip>Escoja la cuenta a la que quiere transferir</InitialTip>
+                        <ChildContent>
+                            @foreach (var cuenta in cuentas)
+                            {
+                                <DropdownListItem Item="@account1[0]"> @cuenta.AccountName / @cuenta.AccountNumber </DropdownListItem>
+                            }
+                        </ChildContent>
+                    </Dropdown>
+
+                </div>
+                s
             </div>
 
 
@@ -33,3 +69,47 @@
 
 </div>
 
+@code{
+    //[Parameter]
+    //public string? email { get; set; }
+
+
+    //public List<Cuenta> cuentas = new List<Cuenta>();
+    //public Cliente? cli = new();
+
+    List<Cuenta> cuentas = new List<Cuenta>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var email = await LocalStore.GetItemAsStringAsync("email");
+        var results = await Http.GetFromJsonAsync<List<Cuenta>>($"api/Cuenta/get/{email}");
+        @if (results != null)
+        {
+            cuentas = results;
+        }
+    }
+    /*
+    protected override async Task OnInitializedAsync()
+    {
+        List<Cliente> list = new();
+        Cliente? cli = new();
+        var result = await Http.GetFromJsonAsync<List<Cliente>>($"api/Client/{email}");
+        if (result is not null)
+        {
+            list = result.ToList();
+            if (list.Any())
+            {
+                cli = list.FirstOrDefault();
+            }
+        }
+
+
+
+    }*/
+
+    private void OnSelected(string selection)
+    {
+        Console.WriteLine(selection);
+    }
+}
