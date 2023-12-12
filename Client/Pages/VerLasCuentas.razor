@@ -12,9 +12,9 @@
 else
 {
 
-    @foreach (var cuenta in cuentas)
+    @foreach (Cuenta cuenta in cuentas)
     {
-
+        cuentaGlobal = cuenta;
         if (cuenta.IsOpen)
         {
 
@@ -69,7 +69,7 @@ else
 
                         @if (@cuenta.Balance() == 0)
                         {
-                            <Tooltip Text="Presione aquí para borrar su cuenta."><button style="background-color: red;" @onclick="DeleteAccount" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
+                            <Tooltip Text="Presione aquí para dar debaja su cuenta."><button style="background-color: red;" @onclick="DeleteAccount" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
                         }
 
                         <h3 class="m-2"> $@cuenta.Balance() </h3>
@@ -89,6 +89,8 @@ else
 
 @code {
     List<Cuenta> cuentas = new List<Cuenta>();
+    Cuenta cuentaGlobal = new Cuenta();
+    String email = "";
 
     void ShowHistory()
     {
@@ -97,12 +99,12 @@ else
 
     void DeleteAccount()
     {
-        //Añadir method de borrar cuenta
+        Http.PutAsJsonAsync<Cuenta>($"{cuentaGlobal.AccountName}/{email}",cuentaGlobal);
     }
 
     protected override async Task OnInitializedAsync()
     {
-        var email = await LocalStore.GetItemAsStringAsync("email");
+        email = await LocalStore.GetItemAsStringAsync("email");
         var results = await Http.GetFromJsonAsync<List<CuentaViewModel>>($"api/Cuenta/get/{email}");
         @if (results != null)
         {
