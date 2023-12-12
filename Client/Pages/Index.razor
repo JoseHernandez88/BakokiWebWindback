@@ -142,7 +142,7 @@
     private string email { get; set; }
     = "";
     string notice = "";
-    
+
     protected override async Task OnInitializedAsync()
     {
         var user=await LocalStore.GetItemAsStringAsync("email");
@@ -151,13 +151,13 @@
             NavigationManager.NavigateTo("/MainPage");
         }
     }
-    
+
     private async void LoginValidation()
     {
         Cliente? cli = new();
         List<Cliente?> list = new();
 
-        
+
         if(contrasena is not null && email is not null)
         {
             if(email.Contains("@") && email.Contains("."))
@@ -165,7 +165,7 @@
                 try
                 {
                     var result = await Http.GetFromJsonAsync<List<Cliente?>>($"api/Cliente/{contrasena}/{email}");
-                    Console.WriteLine("message:", result.ToString());
+                                    
 
 
                     if (result != null)
