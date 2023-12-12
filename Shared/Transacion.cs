@@ -29,7 +29,7 @@ namespace BakokiWeb.Shared
 		}
         public Int64 SignedCentValue() 
 		{ 
-			return Amount * Convert.ToInt64((Math.Pow(-1, Convert.ToDouble(IsCredit)))); 
+			return -1*Amount * Convert.ToInt64((Math.Pow(-1, Convert.ToDouble(IsCredit)))); 
 		}
 		public Int64 Sum(Int64 value)
 		{

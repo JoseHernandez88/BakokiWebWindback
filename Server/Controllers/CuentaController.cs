@@ -64,7 +64,20 @@ namespace BakokiWeb.Server.Controllers
 				).ToListAsync();
 				foreach (var cue in cuentas)
 				{
-					cuentaViewModels.Add(new CuentaViewModel(cue));
+                    var transaciones = await _context.Transacciones.Where(t => t.Cuenta == cue).ToListAsync();
+                    var transaccionesViewModels = new List<TransactionViewModel>();
+                    foreach (var tran in transaciones)
+                    {
+                        transaccionesViewModels.Add(new TransactionViewModel(tran));
+                    }
+
+					cuentaViewModels.Add(new CuentaViewModel(cue)
+					{
+						Transacciones = transaccionesViewModels
+
+					});
+
+                    
 				}
 				return Ok(cuentaViewModels);
 			}
@@ -85,10 +98,22 @@ namespace BakokiWeb.Server.Controllers
 					//cnt.Cliente.LoggedIn &&
 					cnt.AccountNumber.Equals(accountNumber)
 				).ToListAsync();
-				foreach ( var cue in cuentas)
+				foreach ( var cuenta in cuentas)
 				{
-					cuentaViewModels.Add(new CuentaViewModel(cue));
-				}
+                    var transaciones = await _context.Transacciones.Where(t => t.Cuenta == cuenta).ToListAsync();
+                    var transaccionesViewModels = new List<TransactionViewModel>();
+                    foreach (var tran in transaciones)
+                    {
+                        transaccionesViewModels.Add(new TransactionViewModel(tran));
+                    }
+
+					cuentaViewModels.Add(new CuentaViewModel(cuenta)
+					{
+						Transacciones = transaccionesViewModels
+
+					});
+
+                }
 
 				return Ok(cuentaViewModels);
 			}
