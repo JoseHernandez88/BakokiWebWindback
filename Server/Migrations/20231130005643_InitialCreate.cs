@@ -46,7 +46,7 @@ namespace BakokiWeb.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transacion",
+                name: "transaccion",
                 columns: table => new
                 {
                     TransactionID = table.Column<long>(type: "bigint", nullable: false)
@@ -59,9 +59,9 @@ namespace BakokiWeb.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transacion", x => x.TransactionID);
+                    table.PrimaryKey("PK_transaccion", x => x.TransactionID);
                     table.ForeignKey(
-                        name: "FK_Transacion_Cuenta_CuentaAccountNumber",
+                        name: "FK_transaccion_Cuenta_CuentaAccountNumber",
                         column: x => x.CuentaAccountNumber,
                         principalTable: "Cuenta",
                         principalColumn: "AccountNumber");
@@ -73,8 +73,8 @@ namespace BakokiWeb.Server.Migrations
                 column: "ClienteEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transacion_CuentaAccountNumber",
-                table: "Transacion",
+                name: "IX_transaccion_CuentaAccountNumber",
+                table: "transaccion",
                 column: "CuentaAccountNumber");
         }
 
@@ -82,7 +82,7 @@ namespace BakokiWeb.Server.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Transacion");
+                name: "transaccion");
 
             migrationBuilder.DropTable(
                 name: "Cuenta");

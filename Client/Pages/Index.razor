@@ -188,7 +188,7 @@
                                 {
                                     
                                     await LocalStore.SetItemAsStringAsync("email", cli.Email);
-                                    await Http.PutAsJsonAsync<Cliente>($"api/Cliente/{cli.Password}/{cli.Email}",cli);
+                                    await Http.PutAsJsonAsync<Cliente>($"api/Cliente/put/1/{cli.Email}",cli);
                                     NavigationManager.NavigateTo("/MainPage");
                                 }
                                 else

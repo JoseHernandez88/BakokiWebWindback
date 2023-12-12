@@ -11,10 +11,11 @@
 
     <main>
         <div class="top-row px-4">
-            <button @onclick="LougeOut" class="button">LougOut</button>
+            <button @onclick="Log_Out" class="button">Log Out</button>
         </div>
 
         <article class="content px-4">
+            
             @Body
         </article>
     </main>
@@ -36,11 +37,11 @@
             NavigationManager.NavigateTo("/");
         }
     }
-    public async void LougeOut()
+    public async void Log_Out()
     {
         if(cli is not null)
         {
-            await Http.PutAsJsonAsync<Cliente>($"api/Cliente/put / 0 /{ cli.Email}",cli);
+            await Http.PutAsJsonAsync<Cliente>($"api/Cliente/put/0/{ cli.Email}",cli);
             await LocalStore.ClearAsync();
             NavigationManager.NavigateTo("/");
         }

@@ -81,7 +81,7 @@ namespace BakokiWeb.Server.Migrations
                     b.ToTable("Cuentas");
                 });
 
-            modelBuilder.Entity("BakokiWeb.Shared.Transacion", b =>
+            modelBuilder.Entity("BakokiWeb.Shared.transaccion", b =>
                 {
                     b.Property<long>("TransactionID")
                         .ValueGeneratedOnAdd()
@@ -109,7 +109,7 @@ namespace BakokiWeb.Server.Migrations
 
                     b.HasIndex("CuentaAccountNumber");
 
-                    b.ToTable("Transaciones");
+                    b.ToTable("transacciones");
                 });
 
             modelBuilder.Entity("BakokiWeb.Shared.Cuenta", b =>
@@ -121,10 +121,10 @@ namespace BakokiWeb.Server.Migrations
                     b.Navigation("Cliente");
                 });
 
-            modelBuilder.Entity("BakokiWeb.Shared.Transacion", b =>
+            modelBuilder.Entity("BakokiWeb.Shared.transaccion", b =>
                 {
                     b.HasOne("BakokiWeb.Shared.Cuenta", "Cuenta")
-                        .WithMany("Transaciones")
+                        .WithMany("transacciones")
                         .HasForeignKey("CuentaAccountNumber");
 
                     b.Navigation("Cuenta");
@@ -137,7 +137,7 @@ namespace BakokiWeb.Server.Migrations
 
             modelBuilder.Entity("BakokiWeb.Shared.Cuenta", b =>
                 {
-                    b.Navigation("Transaciones");
+                    b.Navigation("transacciones");
                 });
 #pragma warning restore 612, 618
         }

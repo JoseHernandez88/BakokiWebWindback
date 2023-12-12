@@ -15,29 +15,29 @@ namespace BakokiWeb.Server.Migrations
                 table: "Cuenta");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Transacion_Cuenta_CuentaAccountNumber",
-                table: "Transacion");
+                name: "FK_transaccion_Cuenta_CuentaAccountNumber",
+                table: "transaccion");
 
             migrationBuilder.DropPrimaryKey(
-                name: "PK_Transacion",
-                table: "Transacion");
+                name: "PK_transaccion",
+                table: "transaccion");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Cuenta",
                 table: "Cuenta");
 
             migrationBuilder.RenameTable(
-                name: "Transacion",
-                newName: "Transaciones");
+                name: "transaccion",
+                newName: "transacciones");
 
             migrationBuilder.RenameTable(
                 name: "Cuenta",
                 newName: "Cuentas");
 
             migrationBuilder.RenameIndex(
-                name: "IX_Transacion_CuentaAccountNumber",
-                table: "Transaciones",
-                newName: "IX_Transaciones_CuentaAccountNumber");
+                name: "IX_transaccion_CuentaAccountNumber",
+                table: "transacciones",
+                newName: "IX_transacciones_CuentaAccountNumber");
 
             migrationBuilder.RenameIndex(
                 name: "IX_Cuenta_ClienteEmail",
@@ -66,8 +66,8 @@ namespace BakokiWeb.Server.Migrations
                 defaultValue: "");
 
             migrationBuilder.AddPrimaryKey(
-                name: "PK_Transaciones",
-                table: "Transaciones",
+                name: "PK_transacciones",
+                table: "transacciones",
                 column: "TransactionID");
 
             migrationBuilder.AddPrimaryKey(
@@ -83,8 +83,8 @@ namespace BakokiWeb.Server.Migrations
                 principalColumn: "Email");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Transaciones_Cuentas_CuentaAccountNumber",
-                table: "Transaciones",
+                name: "FK_transacciones_Cuentas_CuentaAccountNumber",
+                table: "transacciones",
                 column: "CuentaAccountNumber",
                 principalTable: "Cuentas",
                 principalColumn: "AccountNumber");
@@ -98,12 +98,12 @@ namespace BakokiWeb.Server.Migrations
                 table: "Cuentas");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Transaciones_Cuentas_CuentaAccountNumber",
-                table: "Transaciones");
+                name: "FK_transacciones_Cuentas_CuentaAccountNumber",
+                table: "transacciones");
 
             migrationBuilder.DropPrimaryKey(
-                name: "PK_Transaciones",
-                table: "Transaciones");
+                name: "PK_transacciones",
+                table: "transacciones");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Cuentas",
@@ -122,17 +122,17 @@ namespace BakokiWeb.Server.Migrations
                 table: "Clientes");
 
             migrationBuilder.RenameTable(
-                name: "Transaciones",
-                newName: "Transacion");
+                name: "transacciones",
+                newName: "transaccion");
 
             migrationBuilder.RenameTable(
                 name: "Cuentas",
                 newName: "Cuenta");
 
             migrationBuilder.RenameIndex(
-                name: "IX_Transaciones_CuentaAccountNumber",
-                table: "Transacion",
-                newName: "IX_Transacion_CuentaAccountNumber");
+                name: "IX_transacciones_CuentaAccountNumber",
+                table: "transaccion",
+                newName: "IX_transaccion_CuentaAccountNumber");
 
             migrationBuilder.RenameIndex(
                 name: "IX_Cuentas_ClienteEmail",
@@ -140,8 +140,8 @@ namespace BakokiWeb.Server.Migrations
                 newName: "IX_Cuenta_ClienteEmail");
 
             migrationBuilder.AddPrimaryKey(
-                name: "PK_Transacion",
-                table: "Transacion",
+                name: "PK_transaccion",
+                table: "transaccion",
                 column: "TransactionID");
 
             migrationBuilder.AddPrimaryKey(
@@ -157,8 +157,8 @@ namespace BakokiWeb.Server.Migrations
                 principalColumn: "Email");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Transacion_Cuenta_CuentaAccountNumber",
-                table: "Transacion",
+                name: "FK_transaccion_Cuenta_CuentaAccountNumber",
+                table: "transaccion",
                 column: "CuentaAccountNumber",
                 principalTable: "Cuenta",
                 principalColumn: "AccountNumber");

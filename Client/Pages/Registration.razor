@@ -176,7 +176,7 @@
             cliente.Email = email;
             cliente.Password = contrasena;
             var message = Http.PostAsJsonAsync("api/Cliente", cliente);
-            NavigationManager.NavigateTo("/MainPage");
+            NavigationManager.NavigateTo("/");
         }
         else
         {

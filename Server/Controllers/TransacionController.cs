@@ -8,19 +8,19 @@ namespace BakokiWeb.Server.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class TransacionController : ControllerBase
+	public class TransaccionController : ControllerBase
 	{
 		private readonly DataContext _context;
-		public TransacionController(DataContext context)
+		public TransaccionController(DataContext context)
 		{
 			_context = context;
 		}
 		[HttpGet]
-		public async Task<ActionResult<List<Transacion>>> GetAllTransacion()
+		public async Task<ActionResult<List<transaccion>>> GetAlltransaccion()
 		{
 			try
 			{
-				var list = await _context.Transaciones.ToListAsync();
+				var list = await _context.transacciones.ToListAsync();
 				return Ok(list);
 			}
 			catch (Exception ex)
@@ -29,11 +29,11 @@ namespace BakokiWeb.Server.Controllers
 			}
 		}
 		[HttpGet("{accountNumber}")]
-		public async Task<ActionResult<List<Transacion>>> GetAllTransacionByCuenta(string accountNumber)
+		public async Task<ActionResult<List<transaccion>>> GetAlltransaccionByCuenta(string accountNumber)
 		{
 			try
 			{
-				var list = await _context.Transaciones.Where
+				var list = await _context.transacciones.Where
 					(
 						tran=> 
 							tran.Cuenta.AccountNumber.Equals(accountNumber) &&
@@ -47,11 +47,11 @@ namespace BakokiWeb.Server.Controllers
 			}
 		}
 		[HttpPost]
-		public async Task<ActionResult<List<Transacion>>> PostCuenta(Transacion tran)
+		public async Task<ActionResult<List<transaccion>>> PostCuenta(transaccion tran)
 		{
-			_context.Transaciones.Add(tran);
+			_context.transacciones.Add(tran);
 			await _context.SaveChangesAsync();
-			return Ok(new List<Transacion>() { tran });
+			return Ok(new List<transaccion>() { tran });
 		}
 
 	}

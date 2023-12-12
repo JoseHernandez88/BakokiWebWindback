@@ -21,16 +21,16 @@ namespace BakokiWeb.Shared
 			= true;
 		public virtual Cliente Cliente { get; set; }
 			= new Cliente();
-		public virtual ICollection<Transacion> Transaciones { get; set; }
-			= new List<Transacion>();
+		public virtual ICollection<transaccion> transacciones { get; set; }
+			= new List<transaccion>();
 
 		public Cuenta() { }
 		public double Balance()
 		{
 			Int64 sum = 0;
-			if (Transaciones.Any())
+			if (transacciones.Any())
 			{
-				foreach (var t in Transaciones)
+				foreach (var t in transacciones)
 				{
 					sum = t.Sum(sum);
 				}
@@ -46,7 +46,7 @@ namespace BakokiWeb.Shared
 				cuentaFrom.Cliente.Email.Equals(this.Cliente.Email)
 			)
 			{
-				var too = new Transacion()
+				var too = new transaccion()
 				{
 					Amount = Math.Abs(signedCentAmount),
 					Cuenta = this,
@@ -54,7 +54,7 @@ namespace BakokiWeb.Shared
 					FilledAt = DateTime.Now,
 					IsCredit = signedCentAmount >= 0
 				};
-				var from = new Transacion()
+				var from = new transaccion()
 				{
 					Amount = Math.Abs(signedCentAmount),
 					Cuenta = this,
@@ -64,8 +64,8 @@ namespace BakokiWeb.Shared
 				};
 				if (from != null && too != null)
 				{
-					await Http.PostAsJsonAsync<Transacion>("Trancsacion", too);
-					await Http.PostAsJsonAsync<Transacion>("Trancsacion", from);
+					await Http.PostAsJsonAsync<transaccion>("Trancsacion", too);
+					await Http.PostAsJsonAsync<transaccion>("Trancsacion", from);
 					return true;
 				}	
 				return false;
