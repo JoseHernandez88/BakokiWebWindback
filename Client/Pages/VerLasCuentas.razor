@@ -15,64 +15,72 @@ else
     @foreach (var cuenta in cuentas)
     {
 
-        <div style="background-color: #78774890; height: 150px;" class="container rounded-pill mb-4">
+        if (cuenta.IsOpen)
+        {
+
+
+            <div style="background-color: #78774890; height: 150px;" class="container rounded-pill mb-4">
 
 
 
-            <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between">
 
-                <div class="d-flex">
+                    <div class="d-flex">
 
-                    <div class="p-2">
-
-
-                        <img src="Images/CreditcardPlaceholder.png" style="width:100px; height:100px; margin:15px;" class="rounded float-left">
-
-                    </div>
-
-                    <div class="p-2 d-flex align-self-center">
-
-                        <div class="col d-flex flex-column">
+                        <div class="p-2">
 
 
-                            <div class="Tipo-de-Cuenta float-left">
+                            <img src="Images/CreditcardPlaceholder.png" style="width:100px; height:100px; margin:15px;" class="rounded float-left">
 
-                                <h2>
-                                    @cuenta.AccountName
-                                </h2>
+                        </div>
+
+                        <div class="p-2 d-flex align-self-center">
+
+                            <div class="col d-flex flex-column">
+
+
+                                <div class="Tipo-de-Cuenta float-left">
+
+                                    <h2>
+                                        @cuenta.AccountName
+                                    </h2>
+
+                                </div>
+
+                                <div class="Numero-de-cuenta float-left">
+
+                                    <h2>
+                                        @cuenta.AccountNumber
+                                    </h2>
+
+                                </div>
+
 
                             </div>
-
-                            <div class="Numero-de-cuenta float-left">
-
-                                <h2>
-                                    @cuenta.AccountNumber
-                                </h2>
-
-                            </div>
-
 
                         </div>
 
                     </div>
 
+                    <div class="balance-actual ml-auto p-2 d-flex align-self-center justify-content-center">
+
+
+                        <Tooltip Text="Presione aquí para poder ver el historial de la cuenta."><button @onclick="ShowHistory" class="btn btn-primary m-2"> Ver historial</button></Tooltip>
+
+                        @if (@cuenta.Balance() == 0)
+                        {
+                            <Tooltip Text="Presione aquí para borrar su cuenta."><button style="background-color: red;" @onclick="DeleteAccount" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
+                        }
+
+                        <h3 class="m-2"> $@cuenta.Balance() </h3>
+
+                    </div>
+
+
                 </div>
-
-                <div class="balance-actual ml-auto p-2 d-flex align-self-center justify-content-center">
-
-
-                    <Tooltip Text="Presione aquí para poder ver el historial de la cuenta."><button @onclick="ShowHistory" class="btn btn-primary m-2"> Ver historial</button></Tooltip>
-
-                    <Tooltip Text="Presione aquí para borrar su cuenta."><button style="background-color: red;" @onclick="DeleteAccount" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
-
-                    <h3 class="m-2"> @cuenta.Balance() </h3>
-
-                </div>
-
 
             </div>
-
-        </div>
+        }
 
     }
 
