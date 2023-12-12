@@ -16,12 +16,17 @@ namespace BakokiWeb.Server.Controllers
 			_context = context;
 		}
 		[HttpGet]
-		public async Task<ActionResult<List<transaccion>>> GetAlltransaccion()
+		public async Task<ActionResult<List<TransactionViewModel>>> GetAlltransaccion()
 		{
 			try
 			{
-				var list = await _context.transacciones.ToListAsync();
-				return Ok(list);
+				var transacciones = await _context.Transacciones.ToListAsync();
+				var transactionViewModels= new List<TransactionViewModel>();
+				foreach(var tran in transacciones)
+				{
+					transactionViewModels.Add(new TransactionViewModel(tran));
+				}
+				return Ok(transactionViewModels);
 			}
 			catch (Exception ex)
 			{
@@ -29,17 +34,22 @@ namespace BakokiWeb.Server.Controllers
 			}
 		}
 		[HttpGet("{accountNumber}")]
-		public async Task<ActionResult<List<transaccion>>> GetAlltransaccionByCuenta(string accountNumber)
+		public async Task<ActionResult<List<TransactionViewModel>>> GetAlltransaccionByCuenta(string accountNumber)
 		{
 			try
 			{
-				var list = await _context.transacciones.Where
+				var transactionViewModels=new List<TransactionViewModel>();
+				var transaciones = await _context.Transacciones.Where
 					(
 						tran=> 
 							tran.Cuenta.AccountNumber.Equals(accountNumber) &&
 							tran.Cuenta.IsOpen
 					).ToListAsync();
-				return Ok(list);
+				foreach(var tran in transaciones)
+				{
+					transactionViewModels.Add(new TransactionViewModel(tran));
+				}
+				return Ok(transactionViewModels);
 			}
 			catch (Exception ex)
 			{
@@ -47,11 +57,11 @@ namespace BakokiWeb.Server.Controllers
 			}
 		}
 		[HttpPost]
-		public async Task<ActionResult<List<transaccion>>> PostCuenta(transaccion tran)
+		public async Task<ActionResult<List<TransactionViewModel>>> PostCuenta(Transaccion tran)
 		{
-			_context.transacciones.Add(tran);
+			_context.Transacciones.Add(tran);
 			await _context.SaveChangesAsync();
-			return Ok(new List<transaccion>() { tran });
+			return Ok(new List<TransactionViewModel>() { new TransactionViewModel(tran) });
 		}
 
 	}

@@ -13,7 +13,7 @@ namespace BakokiWeb.Server.Data
         
         public DbSet<Cuenta> Cuentas { get; set; }
         
-        public DbSet<transaccion> transacciones { get; set; }
+        public DbSet<Transaccion> Transacciones { get; set; }
     }
 
 }

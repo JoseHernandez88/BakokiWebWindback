@@ -65,7 +65,7 @@ else
 
                     <Tooltip Text="Presione aquí para borrar su cuenta."><button style="background-color: red;" @onclick="DeleteAccount" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
 
-                    <h3 class="m-2"> $1000 </h3>
+                    <h3 class="m-2"> @cuenta.Balance() </h3>
 
                 </div>
 
@@ -95,10 +95,13 @@ else
     protected override async Task OnInitializedAsync()
     {
         var email = await LocalStore.GetItemAsStringAsync("email");
-        var results = await Http.GetFromJsonAsync<List<Cuenta>>($"api/Cuenta/get/{email}");
+        var results = await Http.GetFromJsonAsync<List<CuentaViewModel>>($"api/Cuenta/get/{email}");
         @if (results != null)
         {
-            cuentas = results;
+            foreach( var cue in results)
+            {
+                cuentas.Add(new Cuenta(cue));
+            }
         }
     }
 

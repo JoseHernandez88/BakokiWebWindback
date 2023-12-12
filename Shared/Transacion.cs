@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BakokiWeb.Shared
 {
-	public class transaccion
+	public class Transaccion
 	{
 		[Key]
 		public Int64 TransactionID { get; set; }
@@ -19,8 +19,15 @@ namespace BakokiWeb.Shared
 			= "";
 		public virtual Cuenta Cuenta { get; set; } 
 			= new Cuenta();
-		public transaccion() { }
-		public Int64 SignedCentValue() 
+		public Transaccion() { }
+        public Transaccion(TransactionViewModel tran) 
+		{
+			TransactionID = tran.TransactionID;
+			Amount=tran.Amount;
+			Origin = tran.Origin;
+			IsCredit = tran.IsCredit;
+		}
+        public Int64 SignedCentValue() 
 		{ 
 			return Amount * Convert.ToInt64((Math.Pow(-1, Convert.ToDouble(IsCredit)))); 
 		}
@@ -29,7 +36,7 @@ namespace BakokiWeb.Shared
 			// This code 
 			return value + this.SignedCentValue();
 		}
-		public Int64 Sum(transaccion tran)
+		public Int64 Sum(Transaccion tran)
 		{
 			return tran.SignedCentValue()+this.SignedCentValue();
 		}

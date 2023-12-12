@@ -3,6 +3,7 @@ using BakokiWeb.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace BakokiWeb.Server.Controllers
 {
@@ -16,12 +17,33 @@ namespace BakokiWeb.Server.Controllers
 			_context = context;
 		}
 		[HttpGet]
-		public async Task<ActionResult<List<Cuenta?>>> GetAllCuentas()
+		public async Task<ActionResult<List<CuentaViewModel?>>> GetAllCuentas()
 		{
 			try
 			{
-				var list = await _context.Cuentas.ToListAsync();
-				return Ok(list);
+				
+				var cuentaViewModels= new List<CuentaViewModel>();
+				var cuentas = await _context.Cuentas.ToListAsync();
+				
+				foreach(var cuenta in cuentas)
+				{
+					var transaciones = await _context.Transacciones.Where(t => t.Cuenta==cuenta).ToListAsync();
+					var transaccionesViewModels = new List<TransactionViewModel>();
+					foreach(var tran in transaciones)
+					{
+						transaccionesViewModels.Add(new TransactionViewModel(tran));
+					}
+
+					cuentaViewModels.Add(new CuentaViewModel(cuenta)
+					{
+						Transacciones = transaccionesViewModels
+						
+					}
+					) ;
+					
+				}
+
+				return Ok(cuentaViewModels);
 			}
 			catch (Exception ex)
 			{
@@ -29,17 +51,22 @@ namespace BakokiWeb.Server.Controllers
 			}
 		}
 		[HttpGet("get/{email}")]
-		public async Task<ActionResult<List<Cuenta?>>> GetAllCuentasByCliente(string email)
+		public async Task<ActionResult<List<CuentaViewModel?>>> GetAllCuentasByCliente(string email)
 		{
 			try
 			{
-				var list = await _context.Cuentas.Where
+				var cuentaViewModels=new List<CuentaViewModel>(); 
+				var cuentas = await _context.Cuentas.Where
 				(
 					cnt => cnt.IsOpen &&
 					//cnt.Cliente.LoggedIn &&
 					cnt.Cliente.Email.Equals(email)
 				).ToListAsync();
-				return Ok(list);
+				foreach (var cue in cuentas)
+				{
+					cuentaViewModels.Add(new CuentaViewModel(cue));
+				}
+				return Ok(cuentaViewModels);
 			}
 			catch (Exception ex)
 			{
@@ -47,17 +74,23 @@ namespace BakokiWeb.Server.Controllers
 			}
 		}
 		[HttpGet("{accountNumber}")]
-		public async Task<ActionResult<List<Cuenta?>>> GetCuentaByAccountNumber(string accountNumber)
+		public async Task<ActionResult<List<CuentaViewModel?>>> GetCuentaByAccountNumber(string accountNumber)
 		{
 			try
 			{
-				var list = await _context.Cuentas.Where
+				var cuentaViewModels= new List<CuentaViewModel>();
+				var cuentas = await _context.Cuentas.Where
 				(
 					cnt => cnt.IsOpen &&
 					//cnt.Cliente.LoggedIn &&
 					cnt.AccountNumber.Equals(accountNumber)
 				).ToListAsync();
-				return Ok(list);
+				foreach ( var cue in cuentas)
+				{
+					cuentaViewModels.Add(new CuentaViewModel(cue));
+				}
+
+				return Ok(cuentaViewModels);
 			}
 			catch (Exception ex)
 			{
@@ -65,30 +98,23 @@ namespace BakokiWeb.Server.Controllers
 			}
 		}
 		[HttpPost]
-		public async Task<ActionResult<List<Cuenta?>>> PostCuenta(Cuenta cuenta)
+		public async Task<ActionResult<List<CuentaViewModel?>>> PostCuenta(Cuenta cuenta)
 		{
 			_context.Cuentas.Add(cuenta);
 			await _context.SaveChangesAsync();
-			return Ok(new List<Cuenta?>() { cuenta });
+			return Ok(new List<CuentaViewModel?>() { new CuentaViewModel(cuenta) });
 		}
-		[HttpPut("{accountNumber}/{password}")]
-		public async Task<ActionResult<List<bool>>> PutCloseAccount(string accountNumber, string password) 
+		[HttpPut("{accountNumber}/{email}")]
+		public async Task<ActionResult<List<bool>>> PutCloseAccount(string accountNumber, string email) 
 		{
-			var list = new List<Cuenta?> { };
-			var cuenta = new Cuenta();
-			var wrapper= await GetCuentaByAccountNumber(accountNumber);
-			if (wrapper != null && wrapper.Value != null)
-			{
-				list=wrapper.Value.ToList();
-				if (list.Any())
-				{
-					cuenta = list.FirstOrDefault();
-				}
-			}
-			
+
+			var cuenta = await _context.Cuentas.FindAsync(accountNumber);
+			var cliente =await _context.Clientes.FindAsync(email);
+					
+
 			if (cuenta != null)
 			{
-				if (cuenta.Cliente.Password.Equals(password))
+				if (cliente!=null && cliente.Cuentas.Contains(cuenta))
 				{
 					cuenta.IsOpen = false;
 					await _context.SaveChangesAsync();
@@ -96,7 +122,7 @@ namespace BakokiWeb.Server.Controllers
 				}
 				else
 				{
-					return new List<bool> { };
+					return new List<bool> { false };
 				}
 			}
 		 	

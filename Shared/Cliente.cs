@@ -32,6 +32,21 @@ namespace BakokiWeb.Shared
 		public ICollection<Cuenta> Cuentas { get; set; }
 			= new List<Cuenta>();
 		public Cliente() { }
+		public Cliente(ClienteViewModel cli)
+		{
+			Email = cli.Email;
+			Password = cli.Password;
+			FirstName = cli.FirstName;
+			LastName = cli.LastName;
+			PhoneNumber = cli.PhoneNumber;
+			LoggedIn = cli.LoggedIn;
+			AddressLine1 = cli.AddressLine1;
+			AddressLine2 = cli.AddressLine2;
+			foreach (var cue in cli.Cuentas) 
+			{
+				Cuentas.Add(new Cuenta(cue));
+			}
+		}
         public void OrderBook(Cuenta cuenta,string Reason)
         {
             MailMessage message = new MailMessage(

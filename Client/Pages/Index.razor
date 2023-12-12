@@ -155,7 +155,7 @@
     private async void LoginValidation()
     {
         Cliente? cli = new();
-        List<Cliente?> list = new();
+        List<ClienteViewModel?> list = new();
 
 
         if(contrasena is not null && email is not null)
@@ -164,17 +164,23 @@
             {
                 try
                 {
-                    var result = await Http.GetFromJsonAsync<List<Cliente?>>($"api/Cliente/{contrasena}/{email}");
-                                    
+                    var result = await Http.GetFromJsonAsync<List<ClienteViewModel?>>($"api/Cliente/{contrasena}/{email}");
+
 
 
                     if (result != null)
                     {
+
                         list = result.ToList();
 
                         if (list.Any())
                         {
-                            cli = list.FirstOrDefault();
+                            var cliente = list.FirstOrDefault();
+                            if(cliente is not null)
+                            {
+                                cli = new Cliente(cliente);
+                            }
+                            
                             if (cli is null)
                             {
                                 //Replace with validatoion false tree.
