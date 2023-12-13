@@ -129,27 +129,17 @@ namespace BakokiWeb.Server.Controllers
 			await _context.SaveChangesAsync();
 			return Ok(new List<CuentaViewModel?>() { new CuentaViewModel(cuenta) });
 		}
-		[HttpPut("put/{accountNumber}/{email}")]
-		public async Task<ActionResult<List<bool>>> PutCloseAccount(string accountNumber, string email) 
+		[HttpPut("put/closeAccount")]
+		public async Task<ActionResult<CuentaViewModel>> PutCloseAccount([FromBody] Cuenta cuenta) 
 		{
-
-			var cuenta = await _context.Cuentas.FindAsync(accountNumber);
-			var cliente =await _context.Clientes.FindAsync(email);
-					
-
-			if (cuenta != null)
+			var result = await _context.Cuentas.FindAsync(cuenta.AccountNumber);
+			
+			if (result != null)
 			{
-				if (cliente!=null && cliente.Cuentas.Contains(cuenta))
-				{
-					cuenta.IsOpen = false;
-					await _context.SaveChangesAsync();
-					return Ok(new List<bool>() { true });
-				}
-				else
-				{
-					return Ok(new List<bool> { false });
-				}
-			}
+                result.IsOpen = false;
+                await _context.SaveChangesAsync();
+                return Ok(new CuentaViewModel(result));
+            }
 		 	
 			return BadRequest("No such account."); 
 		}

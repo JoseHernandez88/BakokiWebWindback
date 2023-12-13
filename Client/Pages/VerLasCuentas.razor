@@ -69,8 +69,7 @@ else
 
                         @if (@cuenta.Balance() == 0)
                         {
-                                            <Tooltip Text="Presione aquí para dar debaja su cuenta."><button style="background-color: red;" @onclick="() => 
-                 DeleteAccount(cuenta)">@cuenta class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
+                          <Tooltip Text="Presione aquí para dar debaja su cuenta."><button style="background-color: red;" @onclick="() => DeleteAccount(cuenta)" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
                         }
 
                         <h3 class="m-2"> $@cuenta.Balance() </h3>
@@ -100,8 +99,9 @@ else
 
     async Task DeleteAccount(Cuenta cuenta)
     {
-        
-        await Http.PutAsJsonAsync<Cuenta>($"put/{cuenta.AccountNumber}/{email}",cuenta);
+
+        var result=await Http.PutAsJsonAsync<Cuenta>($"api/Cuenta/put/closeAccount",cuenta);
+        NavigationManager.NavigateTo("/Cuenta", forceLoad: true);
     }
 
     protected override async Task OnInitializedAsync()
