@@ -32,7 +32,7 @@ else
                 <tr>
                     <td>@tran.FilledAt</td>
                     <td>@tran.Origin</td>
-                    <td>@tran.SignedDollarAmount()</td>
+                    <td>$@tran.SignedDollarAmount().TryFormat</td>
                 </tr>
             }
         </tbody>
