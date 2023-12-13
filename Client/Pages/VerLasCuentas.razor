@@ -65,11 +65,13 @@ else
                     <div class="balance-actual ml-auto p-2 d-flex align-self-center justify-content-center">
 
 
-                        <Tooltip Text="Presione aquí para poder ver el historial de la cuenta."><button @onclick="ShowHistory" class="btn btn-primary m-2"> Ver historial</button></Tooltip>
+                        <Tooltip Text="Presione aquí para poder ver el historial de la cuenta."><button @onclick="() => ShowHistory(cuenta)" class="btn btn-primary m-2"> Ver historial</button></Tooltip>
 
                         @if (@cuenta.Balance() == 0)
                         {
-                          <Tooltip Text="Presione aquí para dar debaja su cuenta."><button style="background-color: red;" @onclick="() => DeleteAccount(cuenta)" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
+
+                            <Tooltip Text="Presione aquí para dar debaja su cuenta."><button style="background-color: red;" @onclick="() => DeleteAccount(cuenta)" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
+
                         }
 
                         <h3 class="m-2"> $@cuenta.Balance() </h3>
@@ -86,15 +88,15 @@ else
 
 }
 
-
 @code {
+
     List<Cuenta> cuentas = new List<Cuenta>();
     Cuenta cuentaGlobal = new Cuenta();
     String email = "";
 
-    void ShowHistory()
+    void ShowHistory(Cuenta cuenta)
     {
-        NavigationManager.NavigateTo("/MostrarHistorial");
+        NavigationManager.NavigateTo($"/MostrarHistorial/{cuenta.AccountNumber}");
     }
 
     async Task DeleteAccount(Cuenta cuenta)

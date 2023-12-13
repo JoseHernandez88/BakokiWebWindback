@@ -1,4 +1,4 @@
-﻿@page "/MostrarHistorial"
+﻿@page "/MostrarHistorial/{AccountNum}"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStore
@@ -6,31 +6,33 @@
 
 <PageTitle>Mostrar Historial</PageTitle>
 
-<h1>Historial de cuentas</h1>
+<h1>Historial de cuenta @cuenta.AccountName @cuenta.AccountNumber </h1>
 
-@if (cuentas == null)
+@if (cuenta == null)
 {
     <p>Esta cuenta no tiene historial...</p>
 }
 else
 {
+
     <table class="table">
+
+
         <thead>
             <tr>
-                <th>Nombre de la cuenta</th>
-                <th>Fecha de inicio</th>
-                <th>Historial de cuenta</th>
-                <th>Número de cuenta</th>
+                <th>Día de archivo</th>
+                <th>Origen</th>
+                <th>Cantidad</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var cuenta in cuentas)
+
+            @foreach (var tran in cuenta.Transacciones)
             {
                 <tr>
-                    <td>@cuenta.AccountName</td>
-                    <td>@cuenta.IsOpen</td>
-                    <td>@cuenta.Transacciones</td>
-                    <td>@cuenta.AccountNumber</td>
+                    <td>@tran.FilledAt</td>
+                    <td>@tran.Origin</td>
+                    <td>@tran.SignedDollarAmount()</td>
                 </tr>
             }
         </tbody>
@@ -39,29 +41,31 @@ else
 
 @code {
 
-        List<Cuenta> cuentas = new List<Cuenta>();
+    [Parameter]
+
+    public string AccountNum { get; set; } = "";
+
+
+    CuentaViewModel? cuenta = new();
 
     protected override async Task OnInitializedAsync()
     {
+
         Cliente? cli = new();
-        List<Cuenta> cuentas = new();
         var userEmail = await LocalStore.GetItemAsStringAsync("email");
         var list = await Http.GetFromJsonAsync<List<Cliente>>($"api/Cliente/{userEmail}");
-        if(list is not null)
+
+        var result = await Http.GetFromJsonAsync<List<CuentaViewModel?>>($"api/Cuenta/{AccountNum}");
+
+        if (list is not null)
         {
-            cli= list.FirstOrDefault();  
+            cli = list.FirstOrDefault();
         }
-        if (cli is not null)
+        if (result is not null && result.Count > 0)
         {
-            cuentas = cli.Cuentas.ToList();
+            cuenta = result.FirstOrDefault();
         }
-            /*
-        var results = await Http.GetFromJsonAsync<List<Cuenta>>("api/Cuenta");
-        @if (results != null)
-        {
-            cuentas = results;
-        }
-        */
+
     }
 
 }
