@@ -69,7 +69,8 @@ else
 
                         @if (@cuenta.Balance() == 0)
                         {
-                            <Tooltip Text="Presione aquí para dar debaja su cuenta."><button style="background-color: red;" @onclick="DeleteAccount" class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
+                                            <Tooltip Text="Presione aquí para dar debaja su cuenta."><button style="background-color: red;" @onclick="() => 
+                 DeleteAccount(cuenta)">@cuenta class="btn btn-primary m-2"> Borrar la cuenta</button></Tooltip>
                         }
 
                         <h3 class="m-2"> $@cuenta.Balance() </h3>
@@ -97,9 +98,10 @@ else
         NavigationManager.NavigateTo("/MostrarHistorial");
     }
 
-    void DeleteAccount()
+    async Task DeleteAccount(Cuenta cuenta)
     {
-        Http.PutAsJsonAsync<Cuenta>($"{cuentaGlobal.AccountName}/{email}",cuentaGlobal);
+        
+        await Http.PutAsJsonAsync<Cuenta>($"put/{cuenta.AccountNumber}/{email}",cuenta);
     }
 
     protected override async Task OnInitializedAsync()

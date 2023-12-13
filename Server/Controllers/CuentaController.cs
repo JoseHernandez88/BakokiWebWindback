@@ -129,7 +129,7 @@ namespace BakokiWeb.Server.Controllers
 			await _context.SaveChangesAsync();
 			return Ok(new List<CuentaViewModel?>() { new CuentaViewModel(cuenta) });
 		}
-		[HttpPut("{accountNumber}/{email}")]
+		[HttpPut("put/{accountNumber}/{email}")]
 		public async Task<ActionResult<List<bool>>> PutCloseAccount(string accountNumber, string email) 
 		{
 
@@ -143,11 +143,11 @@ namespace BakokiWeb.Server.Controllers
 				{
 					cuenta.IsOpen = false;
 					await _context.SaveChangesAsync();
-					return new List<bool>() { true };
+					return Ok(new List<bool>() { true });
 				}
 				else
 				{
-					return new List<bool> { false };
+					return Ok(new List<bool> { false });
 				}
 			}
 		 	
