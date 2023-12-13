@@ -23,6 +23,9 @@ namespace BakokiWeb.Shared
             FilledAt = tran.FilledAt;
             Origin = tran.Origin;
         }
-        
+        public double SignedDollarAmount()
+        {
+            return (-1 * Amount * Math.Pow(-1, Convert.ToDouble(IsCredit)));
+        }
     }
 }
