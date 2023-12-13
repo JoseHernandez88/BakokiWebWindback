@@ -32,7 +32,8 @@ else
                 <tr>
                     <td>@tran.FilledAt</td>
                     <td>@tran.Origin</td>
-                    <td>@tran.SignedDollarAmount()</td>
+                    <td>@string.Format("{0:C}", @tran.SignedDollarAmount())
+                    </td>
                 </tr>
             }
         </tbody>
