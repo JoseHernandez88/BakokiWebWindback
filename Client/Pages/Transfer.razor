@@ -24,15 +24,24 @@
 
                     <img src="Images/ElegirCuenta.png" style="width:300px; height:300px; margin:15px;" class="rounded" />
 
-                    @{ var account1 = new List<string> { "cuenta1", "cuenta1" }; }
 
-                    <Dropdown TItem="string" OnSelected="@OnSelected">
+                    @{ var account1 = new List<Cuenta>(); }
+
+                    @{var counter1 = 0; }
+
+                    <Dropdown TItem="Cuenta" OnSelected="@OnSelected">
                         <InitialTip>Escoja la cuenta de la cual quiere transferir</InitialTip>
                         <ChildContent>
                             @foreach (var cuenta in cuentas)
                             {
-                                <DropdownListItem Item="@account1[0]"> @cuenta.AccountName / @cuenta.AccountNumber </DropdownListItem>
+
+                                account1.Add(@cuenta);
+
+                                <DropdownListItem Item="@account1[counter1]"> @cuenta.AccountName </DropdownListItem>
+
+                                counter1++;
                             }
+
                         </ChildContent>
                     </Dropdown>
 
@@ -46,31 +55,70 @@
                     <img src="Images/ElegirCuenta.png" style="width:300px; height:300px; margin:15px;" class="rounded" />
 
 
-                    @{ var account2 = new List<string> { "cuenta1", "cuenta2" }; }
+                    @{ var account2 = new List<Cuenta>(); }
 
-                    <Dropdown TItem="string" OnSelected="@OnSelected">
-                        <InitialTip>Escoja la cuenta a la que quiere transferir</InitialTip>
-                        <ChildContent>
-                            @foreach (var cuenta in cuentas)
-                            {
-                                <DropdownListItem Item="@account1[0]"> @cuenta.AccountName / @cuenta.AccountNumber </DropdownListItem>
-                            }
-                        </ChildContent>
-                    </Dropdown>
+                    @{var counter2 = 0; }
+
+                    @if (accounts.Count % 2 != 0)
+                    {
+
+                        <Dropdown TItem="Cuenta" OnSelected="@OnSelected">
+                            <InitialTip>Escoja la cuenta a la que quiere transferir</InitialTip>
+
+
+                            <ChildContent>
+
+                                @foreach (var cuenta in cuentas)
+                                {
+
+                                    account2.Add(@cuenta);
+
+                                    <DropdownListItem Item="@account2[counter2]"> @cuenta.AccountName </DropdownListItem>
+
+                                    counter2++;
+
+                                }
+
+                            </ChildContent>
+
+
+                        </Dropdown>
+                    }
+
 
                 </div>
-                s
+
             </div>
 
 
         </div>
+
+        <div class="d-flex flex-column text-center p-5">
+            @if (accounts.Count % 2 == 0 && accounts.Count != 0)
+            {
+
+                <label>
+                    Entre la cantidad que desea transferir a la cuenta <span style= "font-weight:bolder;">@accounts.Last().AccountName</span> :
+                    <input type="number" placeholder="1.00" step="0.01" asp-for="Cantidad" />
+                    <input type="submit" @onclick="TransferMoney" />
+                </label>
+
+
+            }
+        </div>
+
 
     </div>
 
 </div>
 
 @code{
+
+    [Parameter]
+    public int Cantidad { get; set; }
+
     //[Parameter]
+
     //public string? email { get; set; }
 
 
@@ -108,8 +156,21 @@
 
     }*/
 
-    private void OnSelected(string selection)
+    List<Cuenta> accounts = new List<Cuenta>();
+
+    public void OnSelected(Cuenta selection)
     {
-        Console.WriteLine(selection);
+        Console.WriteLine(selection.AccountName);
+        accounts.Add(selection);
+
     }
+
+    public void TransferMoney()
+    {
+        Console.WriteLine("llegamos");
+        //hay que llamar una funcion que tenga como parametros las ultimas dos en la lista de accounts. usando cantidad
+    }
+
+
+
 }
