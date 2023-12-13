@@ -25,7 +25,7 @@ namespace BakokiWeb.Shared
         }
         public double SignedDollarAmount()
         {
-            return (-1 * Amount * Math.Pow(-1, Convert.ToDouble(IsCredit)));
+            return (-1 * Amount * Math.Pow(-1, Convert.ToDouble(IsCredit))/100.0);
         }
     }
 }
