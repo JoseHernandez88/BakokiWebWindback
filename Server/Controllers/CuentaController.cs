@@ -143,7 +143,7 @@ namespace BakokiWeb.Server.Controllers
 
 			return BadRequest("No such account.");
 		}
-		[HttpPut("put/transfer/{tooAccountNumber}")]
+		[HttpPut("put/transfer/{tooAccountNumber}/{signedCentAmount}")]
 		public async Task<ActionResult<CuentaViewModel>> PutTransferFrom([FromBody] CuentaViewModel? From, int signedCentAmount, string tooAccountNumber)
 		{
 			var cuentaToo = await _context.Cuentas.FindAsync(tooAccountNumber);
