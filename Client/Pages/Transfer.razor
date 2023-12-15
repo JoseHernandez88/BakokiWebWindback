@@ -3,6 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStore
 @using BakokiWeb.Shared
+@using System.Text.RegularExpressions;
 
 <PageTitle>Transfer</PageTitle>
 
@@ -105,7 +106,7 @@
                 <form action="/url" method="GET" class="parent text">
                     <label>Entre la cantidad que desea transferir a la cuenta <span style="font-weight:bolder;">@accounts.Last().AccountName</span> :</label>
                     <div class="textBoxPos child">
-                        <input @bind="Cantidad" type="number" placeholder="100.00" name="Cantidad" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" />
+                        <input @bind="Cantidad" type="text" placeholder="100.00" name="Cantidad" pattern="[0-9]{0-8}.[0-9]{2}" />
                     </div>
                     <input type="submit" @onclick="TransferMoney" />
                 </form>
@@ -120,36 +121,12 @@
 @code{
 
     [Parameter]
-    public int Cantidad { get; set; }
-
-    //[Parameter]
-
-    //public string? email { get; set; }
+    public string Cantidad { get; set; } = "";
 
 
-    //public List<Cuenta> cuentas = new List<Cuenta>();
-    //public Cliente? cli = new();
 
     List<CuentaViewModel> cuentas = new List<CuentaViewModel>();
-    //
-    /*sub por esto de ultima
 
-    List<Cuenta> cuentas = new List<Cuenta>();
-    Cuenta cuentaGlobal = new Cuenta();
-    String email = "";
-
-    protected override async Task OnInitializedAsync()
-    {
-        email = await LocalStore.GetItemAsStringAsync("email");
-        var results = await Http.GetFromJsonAsync<List<CuentaViewModel>>($"api/Cuenta/get/{email}");
-        @if (results != null)
-        {
-            foreach (var cue in results)
-            {
-                cuentas.Add(new Cuenta(cue));
-            }
-        }
-    }*/ //sub por esto de ultima
 
     protected override async Task OnInitializedAsync()
     {
@@ -160,24 +137,7 @@
             cuentas = results;
         }
     }
-    /*
-    protected override async Task OnInitializedAsync()
-    {
-        List<Cliente> list = new();
-        Cliente? cli = new();
-        var result = await Http.GetFromJsonAsync<List<Cliente>>($"api/Client/{email}");
-        if (result is not null)
-        {
-            list = result.ToList();
-            if (list.Any())
-            {
-                cli = list.FirstOrDefault();
-            }
-        }
-
-
-
-    }*/
+   
 
 
     List<CuentaViewModel> accounts = new List<CuentaViewModel>();
@@ -196,12 +156,19 @@
 
     async Task TransferMoney()
     {
+        Cantidad = Cantidad.Replace(".", "");
+        Match match = Regex.Match(Cantidad, @"[0-9]{8}");
+        if (match.Success)
+        {
+            var result = await Http.PutAsJsonAsync<CuentaViewModel>($"api/Cuenta/put/transfer/{accounts.Last().AccountNumber}/{Cantidad}", accounts[0]);
+            NavigationManager.NavigateTo("/Cuenta", forceLoad: true);
+        }
+        else
+        {
+            
+        }
 
-        var result = await Http.PutAsJsonAsync<CuentaViewModel>($"api/Cuenta/put/transfer/{accounts.Last().AccountNumber}/{Cantidad}", accounts[0]);
-        NavigationManager.NavigateTo("/Cuenta", forceLoad: true);
-
-        Console.WriteLine(Cantidad);
-        //hay que llamar una funcion que tenga como parametros las ultimas dos en la lista de accounts. usando cantidad
+        
     }
 
 
