@@ -195,7 +195,7 @@
                 cliente.Password = contrasena;
                 var message = Http.PostAsJsonAsync("api/Cliente", cliente);
                 LocalStore.SetItemAsStringAsync("email", cliente.Email);
-                Http.PutAsJsonAsync<Cliente>($"api/Cliente/put/1/{cliente.email}", cliente);
+                Http.PutAsJsonAsync<Cliente>($"api/Cliente/put/1/{cliente.Email}", cliente);
                 NavigationManager.NavigateTo("/MainPage");
             }
             else
