@@ -117,7 +117,7 @@
                 </div>
 
                 <div class="textBoxPos child">
-                     <input @bind="tel" type="tel" placeholder="787-555-5555" class="TextBox" name="Telefono" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" requiered />
+                     <input @bind="tel" type="tel" placeholder="Telephone:555-555-5555" class="TextBox" name="Telefono" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" requiered />
                 </div>
 
                 <div class="textBoxPos child">
@@ -164,7 +164,7 @@
     private string notice = "";
     //private bool reg = true;
 
-    private  RegisterValidation()
+    private void RegisterValidation()
     {
       
         if (nombre != null && 
