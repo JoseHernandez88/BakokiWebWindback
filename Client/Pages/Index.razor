@@ -138,7 +138,7 @@
 
 @code {
     [Parameter]
-    public string contrasena { get; set; } 
+    public string contrasena { get; set; }
     = "";
     private string email { get; set; }
     = "";
@@ -146,8 +146,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var user=await LocalStore.GetItemAsStringAsync("email");
-        if(user is not null)
+        var user = await LocalStore.GetItemAsStringAsync("email");
+        if (user is not null)
         {
             NavigationManager.NavigateTo("/MainPage");
         }
@@ -155,13 +155,14 @@
 
     private async void LoginValidation()
     {
+        bool incorrecto = false;
         Cliente? cli = new();
         List<ClienteViewModel?> list = new();
 
 
-        if(contrasena is not null && email is not null)
+        if (contrasena != "" && email != "")
         {
-            if(email.Contains("@") && email.Contains("."))
+            if (email.Contains("@") && email.Contains("."))
             {
                 try
                 {
@@ -177,11 +178,11 @@
                         if (list.Any())
                         {
                             var cliente = list.FirstOrDefault();
-                            if(cliente is not null)
+                            if (cliente is not null)
                             {
                                 cli = new Cliente(cliente);
                             }
-                            
+
                             if (cli is null)
                             {
                                 //Replace with validatoion false tree.
@@ -191,31 +192,32 @@
                             else
                             {
                                 //Replace with validation posative tree.
-                                if(contrasena == cli.Password)
+                                if (contrasena == cli.Password)
                                 {
-                                    
                                     await LocalStore.SetItemAsStringAsync("email", cli.Email);
-                                    await Http.PutAsJsonAsync<Cliente>($"api/Cliente/put/1/{cli.Email}",cli);
+                                    await Http.PutAsJsonAsync<Cliente>($"api/Cliente/put/1/{cli.Email}", cli);
                                     NavigationManager.NavigateTo("/MainPage");
                                 }
                                 else
                                 {
-                                    notice = "Contraseña incorrecta";
+                                    //notice = "Contraseña incorrecta";
+                                    incorrecto = true;
                                 }
                                 //Console.WriteLine("Last name: ", cli.LastName.ToString());
                             }
+                            notice = "Contraseña incorrecta";
                         }
                         else
                         {
+                            notice = "Ocurrio un error con su email o contraseña";
                             throw new Exception("Index Page: Has lost a list.");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-
                     Console.WriteLine(ex.ToString());
-                    notice = "Ocurrio un error";
+
                 }
             }
             else
@@ -227,5 +229,6 @@
         {
             notice = "Porfavor ingrese su email y su contraseña";
         }
+
     }
 }
