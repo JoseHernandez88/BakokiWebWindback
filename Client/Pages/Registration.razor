@@ -2,6 +2,8 @@
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 @using BakokiWeb.Shared;
+@using System.Text.RegularExpressions;
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
 @page "/Registration"
 
 <PageTitle>Regristro</PageTitle>
@@ -115,7 +117,7 @@
                 </div>
 
                 <div class="textBoxPos child">
-                    <input @bind="tel" type="number" placeholder="Numero de Telefono" class="TextBox" name="Telefono" />
+                     <input @bind="tel" type="tel" placeholder="787-555-5555" class="TextBox" name="Telefono" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" requiered />
                 </div>
 
                 <div class="textBoxPos child">
@@ -162,21 +164,45 @@
     private string notice = "";
     //private bool reg = true;
 
-    private void RegisterValidation()
+    private  RegisterValidation()
     {
-
-        if (nombre != null && apellidos != null && tel != null && dir1 != null && dir2 != null && email != null && email.Contains("@") && email.Contains(".") && contrasena != null && contrasenaConf != null && contrasena == contrasenaConf)
+      
+        if (nombre != null && 
+            apellidos != null && 
+            tel != null 
+            && dir1 != null 
+            && dir2 != null && 
+            email != null && 
+            contrasena != null && 
+            contrasenaConf != null && 
+            contrasena == contrasenaConf)
         {
-            var cliente = new Cliente() { };
-            cliente.FirstName = nombre;
-            cliente.LastName = apellidos;
-            cliente.PhoneNumber = tel;
-            cliente.AddressLine1 = dir1;
-            cliente.AddressLine2 = dir2;
-            cliente.Email = email;
-            cliente.Password = contrasena;
-            var message = Http.PostAsJsonAsync("api/Cliente", cliente);
-            NavigationManager.NavigateTo("/");
+            //From https://regexr.com/3e48o 12/14/2023.
+            var regexEmail = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
+            //From https://ihateregex.io/expr/phone/ 12/14/2023.
+            var regexTel = @"^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$";
+            Match matchEmail = Regex.Match(email, regexEmail);
+            Match matchTel = Regex.Match(tel, regexTel);
+            if(matchTel.Success && matchEmail.Success)
+            {
+                var cliente = new Cliente() { };
+                cliente.FirstName = nombre;
+                cliente.LastName = apellidos;
+                cliente.PhoneNumber = tel.Replace("-","");
+                cliente.AddressLine1 = dir1;
+                cliente.AddressLine2 = dir2;
+                cliente.Email = email;
+                cliente.Password = contrasena;
+                var message = Http.PostAsJsonAsync("api/Cliente", cliente);
+                LocalStore.SetItemAsStringAsync("email", cliente.Email);
+                Http.PutAsJsonAsync<Cliente>($"api/Cliente/put/1/{cliente.email}", cliente);
+                NavigationManager.NavigateTo("/MainPage");
+            }
+            else
+            {
+                notice = "El telephono o email no tienen el formato correcto.";
+            }
+
         }
         else
         {
