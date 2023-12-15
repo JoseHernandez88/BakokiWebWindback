@@ -166,7 +166,7 @@
 
         if (match.Success && double.Parse(Cantidad) /100 <= new Cuenta(accounts[0]).Balance())
         {
-            NavigationManager.NavigateTo("/Cuenta");
+            //NavigationManager.NavigateTo("/Cuenta");
             var result = await Http.PutAsJsonAsync<CuentaViewModel>($"api/Cuenta/put/transfer/{accounts.Last().AccountNumber}/{Cantidad}", accounts[0]);
         }
         else if(!match.Success)
