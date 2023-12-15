@@ -1,9 +1,15 @@
 ﻿@page "/Transfer"
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStore
 @using BakokiWeb.Shared
 
 <PageTitle>Transfer</PageTitle>
+
+@if (cuentas.Count <= 0)
+{
+    <span> Ninguna cuenta asociada encontrada...</span>
+}
 
 <div class="container ">
 
@@ -25,11 +31,11 @@
                     <img src="Images/ElegirCuenta.png" style="width:300px; height:300px; margin:15px;" class="rounded" />
 
 
-                    @{ var account1 = new List<Cuenta>(); }
+                    @{ var account1 = new List<CuentaViewModel>(); }
 
                     @{var counter1 = 0; }
 
-                    <Dropdown TItem="Cuenta" OnSelected="@OnSelected">
+                    <Dropdown TItem="CuentaViewModel" OnSelected="@OnSelected">
                         <InitialTip>Escoja la cuenta de la cual quiere transferir</InitialTip>
                         <ChildContent>
                             @foreach (var cuenta in cuentas)
@@ -55,14 +61,14 @@
                     <img src="Images/ElegirCuenta.png" style="width:300px; height:300px; margin:15px;" class="rounded" />
 
 
-                    @{ var account2 = new List<Cuenta>(); }
+                    @{ var account2 = new List<CuentaViewModel>(); }
 
                     @{var counter2 = 0; }
 
                     @if (accounts.Count % 2 != 0)
                     {
 
-                        <Dropdown TItem="Cuenta" OnSelected="@OnSelected">
+                        <Dropdown TItem="CuentaViewModel" OnSelected="@OnSelected">
                             <InitialTip>Escoja la cuenta a la que quiere transferir</InitialTip>
 
 
@@ -96,14 +102,13 @@
         <div class="d-flex flex-column text-center p-5">
             @if (accounts.Count % 2 == 0 && accounts.Count != 0)
             {
-
-                <label>
-                    Entre la cantidad que desea transferir a la cuenta <span style= "font-weight:bolder;">@accounts.Last().AccountName</span> :
-                    <input type="number" placeholder="1.00" step="0.01" asp-for="Cantidad" />
+                <form action="/url" method="GET" class="parent text">
+                    <label>Entre la cantidad que desea transferir a la cuenta <span style="font-weight:bolder;">@accounts.Last().AccountName</span> :</label>
+                    <div class="textBoxPos child">
+                        <input @bind="Cantidad" type="number" placeholder="100.00" name="Cantidad" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" />
+                    </div>
                     <input type="submit" @onclick="TransferMoney" />
-                </label>
-
-
+                </form>
             }
         </div>
 
@@ -125,13 +130,31 @@
     //public List<Cuenta> cuentas = new List<Cuenta>();
     //public Cliente? cli = new();
 
-    List<Cuenta> cuentas = new List<Cuenta>();
+    List<CuentaViewModel> cuentas = new List<CuentaViewModel>();
+    //
+    /*sub por esto de ultima
 
+    List<Cuenta> cuentas = new List<Cuenta>();
+    Cuenta cuentaGlobal = new Cuenta();
+    String email = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        email = await LocalStore.GetItemAsStringAsync("email");
+        var results = await Http.GetFromJsonAsync<List<CuentaViewModel>>($"api/Cuenta/get/{email}");
+        @if (results != null)
+        {
+            foreach (var cue in results)
+            {
+                cuentas.Add(new Cuenta(cue));
+            }
+        }
+    }*/ //sub por esto de ultima
 
     protected override async Task OnInitializedAsync()
     {
         var email = await LocalStore.GetItemAsStringAsync("email");
-        var results = await Http.GetFromJsonAsync<List<Cuenta>>($"api/Cuenta/get/{email}");
+        var results = await Http.GetFromJsonAsync<List<CuentaViewModel>>($"api/Cuenta/get/{email}");
         @if (results != null)
         {
             cuentas = results;
@@ -156,18 +179,28 @@
 
     }*/
 
-    List<Cuenta> accounts = new List<Cuenta>();
 
-    public void OnSelected(Cuenta selection)
+    List<CuentaViewModel> accounts = new List<CuentaViewModel>();
+
+    public void OnSelected(CuentaViewModel selection)
     {
-        Console.WriteLine(selection.AccountName);
         accounts.Add(selection);
+
+        @if (accounts.Count > 2)
+        {
+            accounts.RemoveAt(0);
+            accounts.RemoveAt(0);
+        }
 
     }
 
-    public void TransferMoney()
+    async Task TransferMoney()
     {
-        Console.WriteLine("llegamos");
+
+        var result = await Http.PutAsJsonAsync<CuentaViewModel>($"api/Cuenta/put/transfer/{accounts.Last().AccountNumber}/{Cantidad}", accounts[0]);
+        NavigationManager.NavigateTo("/Cuenta", forceLoad: true);
+
+        Console.WriteLine(Cantidad);
         //hay que llamar una funcion que tenga como parametros las ultimas dos en la lista de accounts. usando cantidad
     }
 

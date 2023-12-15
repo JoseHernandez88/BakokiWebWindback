@@ -48,7 +48,40 @@ namespace BakokiWeb.Shared
 
 			return sum / 100.0;
 		}
-		
+		public async Task<bool> TransferFrom(Cuenta cuentaFrom, Int64 signedCentAmount, HttpClient Http)
+		{
+			if
+			(
+				cuentaFrom.Balance() >= signedCentAmount / 100.0 &&
+				cuentaFrom.Cliente.Email.Equals(this.Cliente.Email)
+			)
+			{
+				var too = new Transaccion()
+				{
+					Amount = Math.Abs(signedCentAmount),
+					Cuenta = this,
+					Origin = $"Transfer from {this.AccountNumber} {this.AccountName} account.",
+					FilledAt = DateTime.Now,
+					IsCredit = signedCentAmount >= 0
+				};
+				var from = new Transaccion()
+				{
+					Amount = Math.Abs(signedCentAmount),
+					Cuenta = this,
+					Origin = $"Transfer too {cuentaFrom.AccountNumber} {this.AccountName} account.",
+					FilledAt = DateTime.Now,
+					IsCredit = signedCentAmount < 0,
+				};
+				if (from != null && too != null)
+				{
+					await Http.PostAsJsonAsync<Transaccion>("Trancsaccion", too);
+					await Http.PostAsJsonAsync<Transaccion>("Trancsaccion", from);
+					return true;
+				}	
+				return false;
+			}
+			return false;
+		}
 		
 	}
 }
