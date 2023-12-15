@@ -103,12 +103,13 @@
         <div class="d-flex flex-column text-center p-5">
             @if (accounts.Count % 2 == 0 && accounts.Count != 0)
             {
-                <form action="/url" method="GET" class="parent text">
+                <form>
                     <label>Entre la cantidad que desea transferir a la cuenta <span style="font-weight:bolder;">@accounts.Last().AccountName</span> :</label>
-                    <div class="textBoxPos child">
-                        <input @bind="Cantidad" type="text" placeholder="100.00" name="Cantidad" pattern="[0-9]{0-8}.[0-9]{2}" />
+                    <div>
+                        <input @bind="Cantidad" type="text" placeholder="100.00" name="Cantidad" pattern="[0-9]{0,8}.[0-9]{2}" />
                     </div>
                     <input type="submit" @onclick="TransferMoney" />
+                    <p>@notice</p>
                 </form>
             }
         </div>
@@ -123,6 +124,7 @@
     [Parameter]
     public string Cantidad { get; set; } = "";
 
+    private string notice = "";
 
 
     List<CuentaViewModel> cuentas = new List<CuentaViewModel>();
@@ -137,7 +139,7 @@
             cuentas = results;
         }
     }
-   
+
 
 
     List<CuentaViewModel> accounts = new List<CuentaViewModel>();
@@ -157,20 +159,19 @@
     async Task TransferMoney()
     {
         Cantidad = Cantidad.Replace(".", "");
-        Match match = Regex.Match(Cantidad, @"[0-9]{8}");
-        if (match.Success)
+        Match match = Regex.Match(Cantidad, @"[0-9]{0,10}");
+        if (match.Success && double.Parse(Cantidad) / 100.00 <= new Cuenta(accounts[0]).Balance())
         {
+            NavigationManager.NavigateTo("/Cuenta");
             var result = await Http.PutAsJsonAsync<CuentaViewModel>($"api/Cuenta/put/transfer/{accounts.Last().AccountNumber}/{Cantidad}", accounts[0]);
-            NavigationManager.NavigateTo("/Cuenta", forceLoad: true);
+        }
+        else if(double.Parse(Cantidad) / 100.00 <= new Cuenta(accounts[0]).Balance())
+        {
+            notice = $"La cuenta {accounts[0].AccountName} no tiene los fondos suficientes para esta transacción" ;
         }
         else
-        {
-            
-        }
+            notice = "La cantidad debe ser menos de $9,999.99 y con el formato de DDDD.CC";
 
-        
     }
-
-
 
 }

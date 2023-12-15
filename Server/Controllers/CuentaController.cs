@@ -148,10 +148,11 @@ namespace BakokiWeb.Server.Controllers
 		{
 			var cuentaToo = await _context.Cuentas.FindAsync(tooAccountNumber);
             var cuentaFrom = new Cuenta();
+
             if (From != null) 
 				cuentaFrom = await _context.Cuentas.FindAsync(From.AccountNumber);
 
-            if (cuentaFrom!=null && cuentaFrom.Balance() >= signedCentAmount && cuentaToo != null)
+            if (cuentaFrom!=null && cuentaToo != null)
 			{
 				var tranFrom = new Transaccion()
 				{
